@@ -6,17 +6,20 @@ require_once('common.php');
 
 // 引数（クエリー）を受け取る
 
-$qed    = isset($_GET['qed'])? $_GET['qed']:-1; 
+$qid    = isset($_GET['qid'])? $_GET['qid']:-1; 
 
 $answer = $_GET['answer'];
 
 
 
+// idの最大値を取得（=問題数）
+
+$data = getDB1('select max(id) as maxid from Question');
 // Validation
 
-if($qed == -1 || !is_numeric($qed) || !((0<=$qed) && ($qed<count($question))) ){
+if($qid == -1 || !is_numeric($qid) || !((1<=$qid) && ($qid<=$data['maxid'])) ){
 
-	echo 'error: $qed invalid';
+	echo 'error: $qid invalid';
 
 	exit(1);
 
@@ -24,11 +27,15 @@ if($qed == -1 || !is_numeric($qed) || !((0<=$qed) && ($qed<count($question))) ){
 
 
 
+// 回答を取得
+
+$data = getDB1('select answer from Question where id=?', [$qid]);
+
 
 
 // 正解か判定
 
-if( $question[$qed][1] == $answer ){
+if( $data['answer'] == $answer ){
 
 	echo "正解！";
 
