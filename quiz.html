@@ -1,11 +1,3 @@
-<?php
-require_once('common.php');
-$data = getDB1('select max(id) as maxid from question');
-
-$i = rand(1,$data['maxid']);
-//問題の取得
-$data = getDB1('select question from question where id=?'[$i]);
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,15 +6,26 @@ $data = getDB1('select question from question where id=?'[$i]);
 </head>
 <body>
     <h1>Question</h1>
-    <?= $data['question'] ?>
+    <div id="text-question"></div>
 
     <form action="result.php">
-        <input type="hidden" name="qed" value="<?= $i ?>">
+        <input type="hidden" id="qed" name="qed" value="">
         <input type="text" id="text-answer" name="answer">
         <button id="btn-answer">answer</button>
     </form>
 
 <script>
+fetch("/quiz/api/question.php")
+.then( (res)=>{
+return res.json();
+})
+.then( (json)=>{
+// ここに受信時の処理
+document.querySelector("#btn-question").innerHTML=json["text"];
+document.querySelector("#qed");
+});
+
+
 document.querySelector("#btn-answer").addEventListener("click",(e)=>{
     /*alert("Button has pushed!");*/   
     let answer = document.querySelector("#text-answer");
